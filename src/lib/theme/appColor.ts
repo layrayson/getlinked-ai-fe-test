@@ -1,8 +1,9 @@
 export const AppColors = {
   primary: {
     100: "#F5F3FF",
-    200: "#ECE8FF",
-    300: "#675E8B",
+    200: "#E6E0FF",
+    300: "#ECE8FF",
+    400: "#675E8B",
     500: "#755AE2",
   },
   blueGray: { 50: "#F8F9FB", 300: "#8C8CA1", 700: "#4A4A68" },

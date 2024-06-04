@@ -14,7 +14,9 @@ export const Button = ({
 }: Props) => {
   return (
     <button
-      className={"flex items-center justify-center rounded-lg" + className}
+      className={
+        "flex items-center justify-center rounded-lg h-11 " + className
+      }
       onClick={onClick}
       type={type}
       disabled={disabled}

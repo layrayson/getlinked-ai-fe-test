@@ -5,11 +5,11 @@ import { EyeIcon, TimerIcon } from "./Icons";
 
 const Header = () => {
   return (
-    <nav className="bg-white px-8 h-98">
+    <nav className="bg-white px-8 h-98px">
       <Section className="h-full">
         <div className="h-full flex items-center justify-between">
           <div className="flex items-center gap-x-3">
-            <div className="relative w-63 h-62">
+            <div className="relative w-63px h-62px">
               <Image
                 src={"/assets/logos/getlinked_logo.svg"}
                 alt="brand logo"
@@ -33,7 +33,7 @@ const Header = () => {
 
           <div className="flex items-center gap-x-2.5">
             <div>
-              <Button className="w-178 bg-primary-300">
+              <Button className="w-178px bg-primary-300">
                 <div className="flex gap-x-2.5 items-center">
                   <div className="w-6 h-6 flex items-center justify-center rounded-full bg-primary-200">
                     <TimerIcon className="h-4" />
@@ -44,7 +44,7 @@ const Header = () => {
                 </div>
               </Button>
             </div>
-            <div className="w-30 h-30 flex items-center justify-center rounded-full bg-primary-200">
+            <div className="w-30px h-30px flex items-center justify-center rounded-full bg-primary-200">
               <EyeIcon className="h-5" />
             </div>
           </div>

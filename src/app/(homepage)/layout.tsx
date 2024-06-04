@@ -11,7 +11,7 @@ const Layout = ({ children }: Props) => {
         <div className="fixed top-0 w-full">
           <Header />
         </div>
-        <div className="h-98" />
+        <div className="h-98px" />
       </div>
       {children}
     </div>
