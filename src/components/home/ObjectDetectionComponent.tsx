@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import { Button } from "../custom/Button";
 import {
   LampChargeIcon,
@@ -9,6 +11,8 @@ import {
   WifiWhiteIcon,
 } from "../shared/Icons";
 import { GadgetItem } from "./GadgetItem";
+import { tree } from "next/dist/build/templates/app-page";
+import { StartAssessmentModal } from "./StartAssessmentModal";
 
 const ObjectDetectionComponent = () => {
   const gadgets = [
@@ -41,6 +45,8 @@ const ObjectDetectionComponent = () => {
       activated: false,
     },
   ];
+
+  const [openStartAssessment, setOpenStartAssessment] = useState(false);
   return (
     <div>
       <div className="flex gap-x-43px mb-10 items-center">
@@ -61,10 +67,19 @@ const ObjectDetectionComponent = () => {
         </div>
       </div>
       <div>
-        <Button className="bg-primary-500 text-white text-sm font-medium rounded-7px w-207px">
+        <Button
+          onClick={() => setOpenStartAssessment(true)}
+          className="bg-primary-500 text-white text-sm font-medium rounded-7px w-207px"
+        >
           Take picture and continue
         </Button>
       </div>
+      {openStartAssessment && (
+        <StartAssessmentModal
+          isOpen={openStartAssessment}
+          handleClose={() => setOpenStartAssessment(false)}
+        />
+      )}
     </div>
   );
 };

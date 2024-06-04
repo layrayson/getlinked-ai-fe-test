@@ -10,5 +10,6 @@ export const AppColors = {
   blue: { 900: "#0E0E2C" },
   red: { 500: "#FF5F56" },
   white: "#FFFFFF",
+  whiteSmoke: "#F5F3FF",
   black: "#000000",
 };
