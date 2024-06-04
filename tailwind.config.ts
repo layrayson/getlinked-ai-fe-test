@@ -1,3 +1,4 @@
+import { AppColors } from "@/lib/theme/appColor";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -8,10 +9,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      colors: {
+        "primary-100": AppColors.primary[100],
+        "primary-200": AppColors.primary[200],
+        "primary-300": AppColors.primary[300],
+        "primary-500": AppColors.primary[500],
+        "blueGray-50": AppColors.blueGray[50],
+        "blueGray-300": AppColors.blueGray[300],
+        "blueGray-700": AppColors.blueGray[700],
+        "blue-900": AppColors.blue[900],
+        "red-500": AppColors.red[500],
+        white: AppColors.white,
+        black: AppColors.black,
       },
     },
   },
