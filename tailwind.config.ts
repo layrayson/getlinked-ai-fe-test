@@ -1,4 +1,4 @@
-import { AppColors } from "@/lib/theme/appColor";
+import { AppColors } from "./src/lib/theme/appColor";
 import type { Config } from "tailwindcss";
 
 const config: Config = {
