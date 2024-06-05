@@ -29,7 +29,7 @@ export const GadgetItem = ({
           <div
             className={
               `h-35px w-35px mb-1 ${
-                rating < 3 ? "bg-red-100/10" : "bg-primary-200"
+                rating < 3 && updated ? "bg-red-100/10" : "bg-primary-200"
               } relative  border-transparent rounded-full flex items-center justify-center mx-auto ` +
               (rating == 10 ? "border-2 border-primary-500" : "")
             }
@@ -43,7 +43,7 @@ export const GadgetItem = ({
               <div className="w-27.5px h-27.5px bg-primary-500 rounded-full flex items-center justify-center">
                 <CheckWhiteIcon className="w-13.74px h-9.86px" />
               </div>
-            ) : rating < 3 ? (
+            ) : rating < 3 && updated ? (
               <WarningRedIcon className="w-18px h-18px" />
             ) : (
               icon

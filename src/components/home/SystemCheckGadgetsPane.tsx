@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../custom/Button";
 import {
   LampChargeIcon,
@@ -68,21 +68,22 @@ const SystemCheckGadgets = () => {
   const [checkError, setCheckError] = useState<string | null>(null);
   const [runningCheck, setRunningCheck] = useState(false);
 
-  const handleCameraCheck = () => {
+  const handleCameraCheck = async () => {
     setRunningCheck(true);
     startObjectDetection();
-    setTimeout(() => {
+    await new Promise((resolve) => setTimeout(resolve, 5000)).then((_) => {
       stopObjectDetection();
       setRunningCheck(false);
-    }, 5000);
+      if (!checkError) return setOpenStartAssessment(true);
+    });
   };
 
-  const handlePredictions = () => {
+  const handlePredictions = useCallback(() => {
     if (predictions.length == 0) return;
     setCheckError(
       predictions[0].class != "person" ? predictions[0].class : null
     );
-  };
+  }, [predictions]);
 
   const updateGadgets = ({ id, rating }: { id: string; rating: number }) => {
     gadgetsRef.current = gadgetsRef.current.map((gadget) =>
@@ -95,7 +96,6 @@ const SystemCheckGadgets = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        console.log("this is ", stream);
       }
     } catch (error) {}
   };
@@ -117,7 +117,6 @@ const SystemCheckGadgets = () => {
 
   useEffect(() => {
     if (videoBrightness == null) return;
-    console.log(videoBrightness);
     updateGadgets({ id: "lighting", rating: videoBrightness });
   }, [videoBrightness]);
 
@@ -128,7 +127,7 @@ const SystemCheckGadgets = () => {
 
   useEffect(() => {
     handlePredictions();
-  }, [predictions]);
+  }, [predictions, handlePredictions]);
   return (
     <div>
       <div className="flex gap-x-43px mb-10 items-center">
@@ -180,7 +179,7 @@ const SystemCheckGadgets = () => {
           )}
         </Button>
       </div>
-      {openStartAssessment && (
+      {openStartAssessment && !checkError && (
         <StartAssessmentModal
           isOpen={openStartAssessment}
           handleClose={() => setOpenStartAssessment(false)}
