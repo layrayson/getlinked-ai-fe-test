@@ -3409,6 +3409,11 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
+network-speed@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/network-speed/-/network-speed-2.1.1.tgz#89f8c3903e1f77517578c0dc2d078f7dfd2eb8a0"
+  integrity sha512-NDr8h55toVE5Gy/CZI5nUAl+57DX1xl3PyhcXWacUiUttOJ2JsKkm5JzyVaoJ5psR9KUhi9y4EKc+atnWarkOg==
+
 next@14.2.3:
   version "14.2.3"
   resolved "https://registry.yarnpkg.com/next/-/next-14.2.3.tgz#f117dd5d5f20c307e7b8e4f9c1c97d961008925d"

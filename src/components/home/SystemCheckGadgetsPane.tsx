@@ -16,6 +16,9 @@ import { tree } from "next/dist/build/templates/app-page";
 import { StartAssessmentModal } from "./StartAssessmentModal";
 import { useObjectDetection } from "@/lib/hooks/useObjectDetection";
 import { DetectedObject } from "@tensorflow-models/coco-ssd";
+import { useGetAccessoriesPermission } from "@/lib/hooks/useGetAccessoriesPermission";
+import { useGetVideoBrightness } from "@/lib/hooks/useGetVideoBrightness";
+import { useGetNetworkSpeed } from "@/lib/hooks/useGetNetworkSpeed";
 
 const initGadgetState = [
   {
@@ -59,16 +62,11 @@ const SystemCheckGadgets = () => {
   const [openStartAssessment, setOpenStartAssessment] = useState(false);
   const { startObjectDetection, stopObjectDetection, predictions } =
     useObjectDetection(videoRef);
+  const { microphoneAccess, cameraAccess } = useGetAccessoriesPermission();
+  const { videoBrightness } = useGetVideoBrightness(videoRef);
+  const { speed } = useGetNetworkSpeed();
   const [checkError, setCheckError] = useState<string | null>(null);
   const [runningCheck, setRunningCheck] = useState(false);
-  const [cameraAccess, setCameraAccess] = useState(false);
-  const [microphoneAccess, setMicrophoneAccess] = useState(false);
-
-  const updateGadgets = ({ id, rating }: { id: string; rating: number }) => {
-    gadgetsRef.current = gadgetsRef.current.map((gadget) =>
-      gadget.id === id ? { ...gadget, rating, updated: true } : gadget
-    );
-  };
 
   const handleCameraCheck = () => {
     setRunningCheck(true);
@@ -85,37 +83,48 @@ const SystemCheckGadgets = () => {
       predictions[0].class != "person" ? predictions[0].class : null
     );
   };
-  const getCameraAccess = async () => {
+
+  const updateGadgets = ({ id, rating }: { id: string; rating: number }) => {
+    gadgetsRef.current = gadgetsRef.current.map((gadget) =>
+      gadget.id === id ? { ...gadget, rating, updated: true } : gadget
+    );
+  };
+
+  const handleGetVideoStream = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        console.log("this is ", stream);
       }
-      setCameraAccess(true);
-      updateGadgets({ id: "webcam", rating: 10 });
-    } catch (error) {
-      setCameraAccess(false);
-      updateGadgets({ id: "webcam", rating: 0 });
-    }
-  };
-
-  const getMicrophoneAccess = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      setMicrophoneAccess(true);
-      updateGadgets({ id: "mic", rating: 10 });
-    } catch (error) {
-      setMicrophoneAccess(false);
-      updateGadgets({ id: "mic", rating: 0 });
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
-    getCameraAccess();
-  }, []);
+    if (!cameraAccess) return;
+    handleGetVideoStream();
+  }, [cameraAccess]);
+
   useEffect(() => {
-    getMicrophoneAccess();
-  }, []);
+    if (cameraAccess == null) return;
+    updateGadgets({ id: "webcam", rating: cameraAccess ? 10 : 0 });
+  }, [cameraAccess]);
+
+  useEffect(() => {
+    if (microphoneAccess == null) return;
+    updateGadgets({ id: "mic", rating: microphoneAccess ? 10 : 0 });
+  }, [microphoneAccess]);
+
+  useEffect(() => {
+    if (videoBrightness == null) return;
+    console.log(videoBrightness);
+    updateGadgets({ id: "lighting", rating: videoBrightness });
+  }, [videoBrightness]);
+
+  useEffect(() => {
+    if (speed == null) return;
+    updateGadgets({ id: "speed", rating: speed });
+  }, [speed]);
 
   useEffect(() => {
     handlePredictions();
