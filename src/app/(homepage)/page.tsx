@@ -1,18 +1,27 @@
 import SystemCheck from "@/components/home/SystemCheck";
-import Header from "@/components/shared/Header";
+import { Section } from "@/components/shared/Section";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: `Start assessment`,
+  description: `Start your assessment`,
+};
 const Home = () => {
-  const progress = 40;
-  const radius = 5;
-  const strokeWidth = 1;
-  const diameter = radius * 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (progress / 100) * circumference;
   return (
-    <div>
+    <div className="h-screen relative">
       <div className="mt-6">
         <SystemCheck />
       </div>
+      <Section className="mt-112px mb-66px">
+        <div className="flex gap-x-2 items-center  ">
+          <div>
+            <p className="text-blueGray-300 text-sm">POWERED BY</p>
+          </div>
+          <div>
+            <p className="text-blue-900 font-medium text-lg">GetLinked.AI</p>
+          </div>
+        </div>
+      </Section>
     </div>
   );
 };
