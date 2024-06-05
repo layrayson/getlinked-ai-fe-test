@@ -18,6 +18,7 @@ const config: Config = {
       "blueGray-300": AppColors.blueGray[300],
       "blueGray-700": AppColors.blueGray[700],
       "blue-900": AppColors.blue[900],
+      "red-100": AppColors.red[100],
       "red-500": AppColors.red[500],
       "red-700": AppColors.red[700],
 

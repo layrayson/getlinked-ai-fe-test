@@ -16,6 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          defer
+          src="https://unpkg.com/alpinejs@3.2.4/dist/cdn.min.js"
+        ></script>
+      </head>
       <body className={inter.className + " bg-blueGray-50"}>{children}</body>
     </html>
   );

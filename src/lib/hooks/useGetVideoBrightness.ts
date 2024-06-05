@@ -10,7 +10,7 @@ export const useGetVideoBrightness = (
     if (!videoRef.current) return;
 
     getVideoBrightness(videoRef.current!, (b) => {
-      setVideoBrightness(b);
+      setVideoBrightness((b / 255) * 10);
     });
   }, []);
 
