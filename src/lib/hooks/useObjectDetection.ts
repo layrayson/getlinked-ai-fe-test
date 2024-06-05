@@ -11,15 +11,6 @@ export const useObjectDetection = (videoRef: RefObject<HTMLVideoElement>) => {
     detectionIntervalRef.current = intervalId;
   };
 
-  const initializeWebCam = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (error) {}
-  };
-
   const predictObject = async () => {
     const model = await cocoSsd.load();
     if (!videoRef.current) return;
@@ -39,10 +30,6 @@ export const useObjectDetection = (videoRef: RefObject<HTMLVideoElement>) => {
       detectionIntervalRef.current = null;
     }
   };
-
-  useEffect(() => {
-    initializeWebCam();
-  }, []);
 
   return {
     startObjectDetection,
