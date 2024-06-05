@@ -1,4 +1,4 @@
-import ObjectDetectionComponent from "./ObjectDetectionComponent";
+import SystemCheckGadgets from "./SystemCheckGadgetsPane";
 
 const SystemCheck = () => {
   return (
@@ -22,7 +22,7 @@ const SystemCheck = () => {
           </p>
         </div>
         <div>
-          <ObjectDetectionComponent />
+          <SystemCheckGadgets />
         </div>
       </div>
     </div>

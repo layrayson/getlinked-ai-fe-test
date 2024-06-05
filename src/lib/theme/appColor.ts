@@ -8,7 +8,7 @@ export const AppColors = {
   },
   blueGray: { 50: "#F8F9FB", 300: "#8C8CA1", 700: "#4A4A68" },
   blue: { 900: "#0E0E2C" },
-  red: { 500: "#FF5F56" },
+  red: { 500: "#FF5F56", 700: "#FF0000" },
   white: "#FFFFFF",
   whiteSmoke: "#F5F3FF",
   black: "#000000",

@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../custom/Button";
 import {
   LampChargeIcon,
   LampChargeWhiteIcon,
+  LoaderIcon,
   MicrophoneWhiteIcon,
   MonitorRecorderIcon,
   MonitorRecorderWhiteIcon,
@@ -13,8 +14,10 @@ import {
 import { GadgetItem } from "./GadgetItem";
 import { tree } from "next/dist/build/templates/app-page";
 import { StartAssessmentModal } from "./StartAssessmentModal";
+import { useObjectDetection } from "@/lib/hooks/useObjectDetection";
+import { DetectedObject } from "@tensorflow-models/coco-ssd";
 
-const ObjectDetectionComponent = () => {
+const SystemCheckGadgets = () => {
   const gadgets = [
     {
       name: "Webcam",
@@ -45,13 +48,54 @@ const ObjectDetectionComponent = () => {
       activated: false,
     },
   ];
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const [openStartAssessment, setOpenStartAssessment] = useState(false);
+  const { startObjectDetection, stopObjectDetection, predictions } =
+    useObjectDetection(videoRef);
+  const [checkError, setCheckError] = useState<string | null>(null);
+  const [runningCheck, setRunningCheck] = useState(false);
+
+  const handleCameraCheck = () => {
+    setRunningCheck(true);
+    startObjectDetection();
+    setTimeout(() => {
+      stopObjectDetection();
+      setRunningCheck(false);
+    }, 5000);
+  };
+
+  const handlePredictions = () => {
+    if (predictions.length == 0) return;
+    setCheckError(
+      predictions[0].class != "person" ? predictions[0].class : null
+    );
+  };
+
+  useEffect(() => {
+    handlePredictions();
+  }, [predictions]);
   return (
     <div>
       <div className="flex gap-x-43px mb-10 items-center">
         <div className="w-264px h-168px">
-          <div className="w-full h-full border border-primary-500 rounded-10px"></div>
+          <div
+            className={`w-full h-full rounded-10px overflow-hidden relative ${
+              !checkError
+                ? " border border-primary-500 "
+                : "border-3px border-red-700"
+            }`}
+          >
+            {checkError && (
+              <div className="h-6 px-2.5 flex items-center bg-red-700/55 backdrop-opacity-45 w-fit rounded-5px absolute left-3px top-3px">
+                <p className="text-white text-10px fonnt-medium">
+                  {" "}
+                  <span className="capitalize">{checkError}</span> detected
+                </p>
+              </div>
+            )}
+            <video ref={videoRef} autoPlay muted />
+          </div>
         </div>
         <div className="w-198px grid grid-cols-2 gap-4">
           {gadgets.map((gadget, index) => (
@@ -68,10 +112,18 @@ const ObjectDetectionComponent = () => {
       </div>
       <div>
         <Button
-          onClick={() => setOpenStartAssessment(true)}
-          className="bg-primary-500 text-white text-sm font-medium rounded-7px w-207px"
+          onClick={handleCameraCheck}
+          className={`bg-primary-500 text-white text-sm font-medium rounded-7px w-207px`}
         >
-          Take picture and continue
+          {runningCheck ? (
+            <LoaderIcon
+              className={`h-5 w-5 text-white ${
+                runningCheck ? "animate-spin" : ""
+              }`}
+            />
+          ) : (
+            " Take picture and continue"
+          )}
         </Button>
       </div>
       {openStartAssessment && (
@@ -84,4 +136,4 @@ const ObjectDetectionComponent = () => {
   );
 };
 
-export default ObjectDetectionComponent;
+export default SystemCheckGadgets;

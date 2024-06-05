@@ -9,6 +9,7 @@ import WarningRedIcon from "../../../public/assets/icons/warning_red_icon.svg";
 import WifiIcon from "../../../public/assets/icons/wifi_icon.svg";
 import WifiWhiteIcon from "../../../public/assets/icons/wifi_white_icon.svg";
 import CheckWhiteIcon from "../../../public/assets/icons/check_white_icon.svg";
+import LoaderIcon from "../../../public/assets/icons/loader_icon.svg";
 
 export {
   EyeIcon,
@@ -22,4 +23,5 @@ export {
   WifiIcon,
   WifiWhiteIcon,
   CheckWhiteIcon,
+  LoaderIcon,
 };

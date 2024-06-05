@@ -19,6 +19,8 @@ const config: Config = {
       "blueGray-700": AppColors.blueGray[700],
       "blue-900": AppColors.blue[900],
       "red-500": AppColors.red[500],
+      "red-700": AppColors.red[700],
+
       white: AppColors.white,
       whiteSmoke: AppColors.whiteSmoke,
       black: AppColors.black,
@@ -53,6 +55,7 @@ const config: Config = {
         "1149px": "1149px",
       },
       borderRadius: {
+        "5px": "5px",
         "7px": "7px",
         "9x": "9px",
         "10px": "10px",
@@ -65,6 +68,9 @@ const config: Config = {
       },
       fontSize: {
         "10px": "10px",
+      },
+      borderWidth: {
+        "3px": "3px",
       },
     },
   },
