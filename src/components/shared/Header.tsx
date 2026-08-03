@@ -1,9 +1,39 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Section } from "./Section";
 import { Button } from "../custom/Button";
 import { EyeIcon, TimerIcon } from "./Icons";
 
+const INITIAL_SECONDS = 29 * 60 + 10;
+
+const formatTimeLeft = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+};
+
 const Header = () => {
+  const [secondsLeft, setSecondsLeft] = useState(INITIAL_SECONDS);
+
+  useEffect(() => {
+    const endsAt = Date.now() + INITIAL_SECONDS * 1000;
+
+    const tick = () => {
+      const remaining = Math.max(0, Math.round((endsAt - Date.now()) / 1000));
+      setSecondsLeft(remaining);
+      return remaining;
+    };
+
+    tick();
+    const intervalId = setInterval(() => {
+      if (tick() === 0) clearInterval(intervalId);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <nav className="bg-white px-8 h-98px">
       <Section className="h-full">
@@ -39,7 +69,10 @@ const Header = () => {
                     <TimerIcon className="h-4" />
                   </div>
                   <p className="text-primary-500 text-sm">
-                    <span className="font-bold text-lg">29:10</span> time left
+                    <span className="font-bold text-lg">
+                      {formatTimeLeft(secondsLeft)}
+                    </span>{" "}
+                    time left
                   </p>
                 </div>
               </Button>
