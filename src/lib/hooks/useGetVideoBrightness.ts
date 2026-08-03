@@ -1,18 +1,21 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { getVideoBrightness } from "../extensions/helpers/getVideoBrightness";
 
 export const useGetVideoBrightness = (
-  videoRef: RefObject<HTMLVideoElement>
+  videoRef: RefObject<HTMLVideoElement>,
+  enabled = true
 ) => {
   const [videoBrightness, setVideoBrightness] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!videoRef.current) return;
+    if (!enabled || !videoRef.current) return;
 
-    getVideoBrightness(videoRef.current!, (b) => {
+    const dispose = getVideoBrightness(videoRef.current, (b) => {
       setVideoBrightness((b / 255) * 10);
     });
-  }, []);
+
+    return dispose;
+  }, [enabled, videoRef]);
 
   return {
     videoBrightness,
