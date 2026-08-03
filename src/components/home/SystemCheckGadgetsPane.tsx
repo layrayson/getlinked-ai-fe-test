@@ -12,10 +12,8 @@ import {
   WifiWhiteIcon,
 } from "../shared/Icons";
 import { GadgetItem } from "./GadgetItem";
-import { tree } from "next/dist/build/templates/app-page";
 import { StartAssessmentModal } from "./StartAssessmentModal";
 import { useObjectDetection } from "@/lib/hooks/useObjectDetection";
-import { DetectedObject } from "@tensorflow-models/coco-ssd";
 import { useGetAccessoriesPermission } from "@/lib/hooks/useGetAccessoriesPermission";
 import { useGetVideoBrightness } from "@/lib/hooks/useGetVideoBrightness";
 import { useGetNetworkSpeed } from "@/lib/hooks/useGetNetworkSpeed";
@@ -54,56 +52,63 @@ const initGadgetState = [
     updated: false,
   },
 ];
-const SystemCheckGadgets = () => {
-  const gadgetsRef = useRef(initGadgetState);
 
+const SystemCheckGadgets = () => {
+  const [gadgets, setGadgets] = useState(initGadgetState);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const checkErrorRef = useRef<string | null>(null);
 
   const [openStartAssessment, setOpenStartAssessment] = useState(false);
   const { startObjectDetection, stopObjectDetection, predictions } =
     useObjectDetection(videoRef);
-  const { microphoneAccess, cameraAccess } = useGetAccessoriesPermission();
-  const { videoBrightness } = useGetVideoBrightness(videoRef);
+  const { microphoneAccess, cameraAccess, mediaStream } =
+    useGetAccessoriesPermission();
+  const { videoBrightness } = useGetVideoBrightness(
+    videoRef,
+    Boolean(mediaStream)
+  );
   const { speed } = useGetNetworkSpeed();
   const [checkError, setCheckError] = useState<string | null>(null);
   const [runningCheck, setRunningCheck] = useState(false);
 
   const handleCameraCheck = async () => {
     setRunningCheck(true);
+    setCheckError(null);
+    checkErrorRef.current = null;
     startObjectDetection();
-    await new Promise((resolve) => setTimeout(resolve, 5000)).then((_) => {
-      stopObjectDetection();
-      setRunningCheck(false);
-      if (!checkError) return setOpenStartAssessment(true);
-    });
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    stopObjectDetection();
+    setRunningCheck(false);
+
+    if (!checkErrorRef.current) {
+      setOpenStartAssessment(true);
+    }
   };
 
   const handlePredictions = useCallback(() => {
-    if (predictions.length == 0) return;
-    setCheckError(
-      predictions[0].class != "person" ? predictions[0].class : null
-    );
+    if (predictions.length === 0) return;
+
+    const nextError =
+      predictions[0].class !== "person" ? predictions[0].class : null;
+
+    checkErrorRef.current = nextError;
+    setCheckError(nextError);
   }, [predictions]);
 
   const updateGadgets = ({ id, rating }: { id: string; rating: number }) => {
-    gadgetsRef.current = gadgetsRef.current.map((gadget) =>
-      gadget.id === id ? { ...gadget, rating, updated: true } : gadget
+    setGadgets((prev) =>
+      prev.map((gadget) =>
+        gadget.id === id ? { ...gadget, rating, updated: true } : gadget
+      )
     );
   };
 
-  const handleGetVideoStream = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (error) {}
-  };
-
   useEffect(() => {
-    if (!cameraAccess) return;
-    handleGetVideoStream();
-  }, [cameraAccess]);
+    if (!mediaStream || !videoRef.current) return;
+    videoRef.current.srcObject = mediaStream;
+  }, [mediaStream]);
 
   useEffect(() => {
     if (cameraAccess == null) return;
@@ -128,6 +133,7 @@ const SystemCheckGadgets = () => {
   useEffect(() => {
     handlePredictions();
   }, [predictions, handlePredictions]);
+
   return (
     <div>
       <div className="flex gap-x-43px mb-10 items-center">
@@ -141,17 +147,17 @@ const SystemCheckGadgets = () => {
           >
             {checkError && (
               <div className="h-6 px-2.5 flex items-center bg-red-700/55 backdrop-opacity-45 w-fit rounded-5px absolute left-3px top-3px">
-                <p className="text-white text-10px fonnt-medium">
+                <p className="text-white text-10px font-medium">
                   {" "}
                   <span className="capitalize">{checkError}</span> detected
                 </p>
               </div>
             )}
-            <video ref={videoRef} autoPlay muted />
+            <video ref={videoRef} autoPlay muted playsInline />
           </div>
         </div>
         <div className="w-198px grid grid-cols-2 gap-4">
-          {gadgetsRef.current.map((gadget, index) => (
+          {gadgets.map((gadget, index) => (
             <GadgetItem
               key={"gadget-" + index}
               rating={gadget.rating}
@@ -166,14 +172,11 @@ const SystemCheckGadgets = () => {
       <div>
         <Button
           onClick={handleCameraCheck}
+          disabled={runningCheck}
           className={`bg-primary-500 text-white text-sm font-medium rounded-7px w-207px`}
         >
           {runningCheck ? (
-            <LoaderIcon
-              className={`h-5 w-5 text-white ${
-                runningCheck ? "animate-spin" : ""
-              }`}
-            />
+            <LoaderIcon className="h-5 w-5 text-white animate-spin" />
           ) : (
             " Take picture and continue"
           )}
